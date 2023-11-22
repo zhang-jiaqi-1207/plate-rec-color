@@ -4,4 +4,5 @@ demo*.*
 
 ### Ignore the following directories
 /results/
+/preds/
 /*/__pycache__/

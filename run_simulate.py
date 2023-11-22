@@ -9,7 +9,7 @@ from utils.post_process import detect_Recognition_plate, detect_Recognition_plat
 
 
 # RKNN模型参数设定
-IMG_PATH = '/mnt/c/Users/jxb/MyFiles/车牌/地库/苏F188W6.jpg'             # 选择测试的图片
+IMG_PATH = '/home/batc-jxb/Projects/Rknn/model-convert/plate-detect/figures/1.png'             # 选择测试的图片
 ONNX_MODEL = './weights/plate_rec_color-new.onnx'
 RKNN_MODEL = './weights/plate_rec_color-new.rknn'
 QUANTIZE_ON = False
@@ -17,8 +17,7 @@ DATASET = ''
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 detect_model = load_model("./weights/plate_detect.pt", device)  #初始化检测模型
-plate_rec_model = init_model(device, "./weights/plate_rec_color.pth", is_color = True)      #初始化识别模型
-onnx_path = ONNX_MODEL
+plate_rec_model = init_model(device, "./weights/plate_rec_color-new.pth", is_color = True)      #初始化识别模型
 
 
 if __name__ == '__main__':
@@ -29,8 +28,9 @@ if __name__ == '__main__':
     ### pre-process config
     print('--> Config model')
     rknn.config(
-        mean_values = [[114.57069762499403, 112.06498372297212, 112.0936524574251]],
-        std_values = [[56.552368489533805, 59.74804638037939, 59.92431607351682]],
+        # mean_values = [[114.57069762499403, 112.06498372297212, 112.0936524574251]],
+        # std_values = [[56.552368489533805, 59.74804638037939, 59.92431607351682]],
+        optimization_level = 2,
         target_platform = "rk3588")
     print('done')
 

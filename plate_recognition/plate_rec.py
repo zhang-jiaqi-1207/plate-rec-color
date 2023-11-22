@@ -1,4 +1,4 @@
-from plate_recognition.plateNet import myNet_ocr,myNet_ocr_color
+from plate_recognition.plateNet import myNet_ocr, myNet_ocr_color2
 import torch
 import torch.nn as nn
 import cv2
@@ -59,6 +59,7 @@ def image_processing_rknn(img, device):
 
     # normalize
     img = img.astype(np.float32)
+    img = (img / 255. - mean_value) / std_value
     img = img.reshape(1, *img.shape)
     return img
 
@@ -66,6 +67,7 @@ def get_plate_result(img,device,model,is_color=False):
     input = image_processing(img,device)
     if is_color:  #是否识别颜色
         preds,color_preds = model(input)
+        np.save("./preds/torch_pred.npy", color_preds.cpu().detach().numpy())
         color_preds = torch.softmax(color_preds,dim=-1)
         color_conf,color_index = torch.max(color_preds,dim=-1)
         color_conf=color_conf.item()
@@ -94,6 +96,7 @@ def get_plate_result_rknn(img: ndarray,device: device, model: RKNN, is_color: bo
     input = image_processing_rknn(img,device)
     if is_color:  #是否识别颜色
         preds, color_preds = model.inference(inputs=[input])
+        np.save("./preds/rknn_pred.npy", color_preds)
         color_preds = torch.from_numpy(color_preds).to(device)
 
         color_preds = torch.softmax(color_preds,dim=-1)
@@ -127,7 +130,7 @@ def init_model(device,model_path,is_color = False):
     color_classes=0
     if is_color:
         color_classes=5           #颜色类别数
-    model = myNet_ocr_color(num_classes=len(plateName),export=True,cfg=cfg,color_num=color_classes)
+    model = myNet_ocr_color2(num_classes=len(plateName),export=True,cfg=cfg,color_num=color_classes)
    
     model.load_state_dict(model_state,strict=False)
     model.to(device)

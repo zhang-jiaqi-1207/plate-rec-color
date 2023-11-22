@@ -1,7 +1,7 @@
 import torch
 import os
 from torch import nn
-from plate_recognition.plateNet import myNet_ocr_color
+from plate_recognition.plateNet import myNet_ocr_color2
 
 
 ### File path setting 
@@ -26,7 +26,7 @@ def init_model(device,model_path,is_color = False):
     if is_color:
         color_classes = 5           #颜色类别数
 
-    model = myNet_ocr_color(
+    model = myNet_ocr_color2(
         num_classes = len(plateName),
         export = True,
         cfg = cfg,
